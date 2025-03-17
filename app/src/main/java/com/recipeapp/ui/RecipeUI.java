@@ -6,7 +6,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import com.recipeapp.datahandler.DataHandler;
-
+import com.recipeapp.model.Ingredient;
+import com.recipeapp.model.Recipe;
 import com.recipeapp.datahandler.CSVDataHandler;
 
 public class RecipeUI {
@@ -36,8 +37,10 @@ public class RecipeUI {
 
                 switch (choice) {
                     case "1":
+                        displayRecipes();
                         break;
                     case "2":
+                        addNewRecipe();
                         break;
                     case "3":
                         break;
@@ -55,7 +58,67 @@ public class RecipeUI {
     }
 
     //DataHndllerから読み込んだレシピデータを整形してコンソールに表示します。
-    public void displayRecipes() {
-        
+    private void displayRecipes() {
+        try {
+
+            ArrayList<Recipe> recipis = dataHandler.readData();
+    
+            if (recipis.isEmpty()) {
+                System.out.println("No recipes available.");
+            }
+    
+            System.out.println("Recipes:");
+            System.out.println("-----------------------------------");
+    
+            for (Recipe recipe : recipis) {
+                System.out.println("Recipe Name: " + recipe.getName());
+    
+                System.out.print("Main Ingredients: ");
+    
+                ArrayList<Ingredient> ingredients = recipe.getIngredients();
+                for (int i = 0; i < ingredients.size(); i++) {
+                    System.out.print(ingredients.get(i).getName());
+                    if(i < ingredients.size() - 1) {
+                        System.out.print(",");
+                    }
+                }
+                System.out.println();
+                System.out.println("-----------------------------------");
+            }
+        } catch(IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+    }
+
+    // DataHandlerを使用してrecipes.csvに新しいレシピを追加。
+    private void addNewRecipe() {
+        try {
+            System.out.println("Adding a new recipe.");
+            //レシピ名
+            System.out.print("Enter recipe name: ");
+            String recipeName = reader.readLine();
+    
+            //材料リスト
+            ArrayList<Ingredient> ingredients = new ArrayList<Ingredient>();
+            System.out.println("Enter ingredients (type 'done' when finished): ");
+    
+            while (true) {
+                System.out.print("Ingredient: ");
+                String ingredientName = reader.readLine();
+    
+                if(ingredientName.equals("done")) {
+                    break;
+                }
+                ingredients.add(new Ingredient(ingredientName));
+            }
+    
+            //CSVに保存
+            Recipe recipe = new Recipe(recipeName, ingredients);
+            dataHandler.writeData(recipe);
+    
+            System.out.println("Recipe added successfully.");
+        } catch(IOException e) {
+            System.out.println("Failed to add new recipe: " + e.getMessage());
+        }
     }
 }
