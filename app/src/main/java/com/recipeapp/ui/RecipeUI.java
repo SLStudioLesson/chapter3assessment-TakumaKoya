@@ -59,34 +59,29 @@ public class RecipeUI {
 
     //DataHndllerから読み込んだレシピデータを整形してコンソールに表示します。
     private void displayRecipes() {
-        try {
+        ArrayList<Recipe> recipis = dataHandler.readData();
 
-            ArrayList<Recipe> recipis = dataHandler.readData();
-    
-            if (recipis.isEmpty()) {
-                System.out.println("No recipes available.");
-            }
-    
-            System.out.println("Recipes:");
-            System.out.println("-----------------------------------");
-    
-            for (Recipe recipe : recipis) {
-                System.out.println("Recipe Name: " + recipe.getName());
-    
-                System.out.print("Main Ingredients: ");
-    
-                ArrayList<Ingredient> ingredients = recipe.getIngredients();
-                for (int i = 0; i < ingredients.size(); i++) {
-                    System.out.print(ingredients.get(i).getName());
-                    if(i < ingredients.size() - 1) {
-                        System.out.print(",");
-                    }
+        if (recipis.isEmpty()) {
+            System.out.println("No recipes available.");
+        }
+
+        System.out.println("Recipes:");
+        System.out.println("-----------------------------------");
+
+        for (Recipe recipe : recipis) {
+            System.out.println("Recipe Name: " + recipe.getName());
+
+            System.out.print("Main Ingredients: ");
+
+            ArrayList<Ingredient> ingredients = recipe.getIngredients();
+            for (int i = 0; i < ingredients.size(); i++) {
+                System.out.print(ingredients.get(i).getName());
+                if(i < ingredients.size() - 1) {
+                    System.out.print(",");
                 }
-                System.out.println();
-                System.out.println("-----------------------------------");
             }
-        } catch(IOException e) {
-            System.out.println("Error reading file: " + e.getMessage());
+            System.out.println();
+            System.out.println("-----------------------------------");
         }
     }
 
